@@ -6,6 +6,7 @@ export interface PostInterface {
 	text: string
 	likes: number
 	mainId: number
+	comments: Array<CommentInterface>
 }
 
 export interface UserInterface {
@@ -20,4 +21,10 @@ export interface UserInterface {
 	subscribers: Array<number>
 	posts: Array<PostInterface>
 	likedPosts: Array<number>
+}
+
+export interface CommentInterface {
+	text: string
+	parentId: number
+	id?: number
 }

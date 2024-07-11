@@ -41,6 +41,7 @@ const Home: React.FC = () => {
 					extraId:
 						Math.floor(Math.random() * (0 - 999999999999999)) + 999999999999999,
 					likes: 0,
+					comments: [],
 				}
 
 				await axios
@@ -49,6 +50,7 @@ const Home: React.FC = () => {
 						text: postText,
 						extraId: newPost.extraId,
 						likes: newPost.likes,
+						comments: newPost.comments,
 					})
 					.then(() => {
 						setPostText('')

@@ -5,6 +5,7 @@ import UserInfo from '@/pages//UserInfo/UserInfo'
 import BlogerInfo from '@/pages/BlogerInfo'
 import Subscribers from '@/pages/Subscribers'
 import Subscribes from '@/pages/Subscribes'
+import PostComments from '@/pages/PostComments'
 
 const Router = () => {
 	const hasUser = localStorage.getItem('user')
@@ -16,6 +17,7 @@ const Router = () => {
 			<Route path='/userInfo/:authorId' element={<BlogerInfo />} />
 			<Route path='/subscribers' element={<Subscribers />} />
 			<Route path='/subscribes' element={<Subscribes />} />
+			<Route path='/:postId' element={<PostComments />} />
 		</Routes>
 	)
 }

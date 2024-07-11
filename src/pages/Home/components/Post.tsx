@@ -7,7 +7,7 @@ import { getPosts, removePost } from '@/store/slices/PostsSlice'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getUser } from '@/store/slices/UserSlice'
 
 interface PostProps {
@@ -16,6 +16,7 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post }) => {
 	const dispatch: AppDispatch = useDispatch()
+	const navigate = useNavigate()
 
 	const globalUser = useSelector((store: RootState) => store.user.user)
 	const [user, setUser] = useState<UserInterface | undefined>(globalUser)
@@ -66,6 +67,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 					}
 				)
 				setLPosts(updatedLikedPosts)
+				dispatch(getPosts())
 			} else {
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/posts/${post.id}`,
@@ -81,6 +83,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 					}
 				)
 				setLPosts(updatedLikedPosts)
+				dispatch(getPosts())
 			}
 			setLove(!love)
 		} catch (error) {
@@ -137,9 +140,14 @@ const Post: React.FC<PostProps> = ({ post }) => {
 			<p className='mt-3 break-all'>{post.text}</p>
 			<br />
 			<div className='flex gap-3 opacity-50'>
-				<button onClick={toggleLike}>
+				<button className='flex items-center gap-1' onClick={toggleLike}>
 					{love ? (
-						<img src={heart} alt='#' className='w-[15px]' />
+						<>
+							{post.likes > 1 ? (
+								<span className='text-[13px]'>{post.likes}</span>
+							) : null}
+							<img src={heart} alt='#' className='w-[15px]' />
+						</>
 					) : (
 						<div className='flex items-start gap-1'>
 							{post.likes > 1 ? (
@@ -149,7 +157,11 @@ const Post: React.FC<PostProps> = ({ post }) => {
 						</div>
 					)}
 				</button>
-				<button>
+				<button
+					className='flex gap-1 text-[15px]'
+					onClick={() => navigate(`/${post.id}`)}
+				>
+					<span>{post.comments.length}</span>
 					<MessageCircle width='15px' className='duration-100 hover:w-[17px]' />
 				</button>
 			</div>
