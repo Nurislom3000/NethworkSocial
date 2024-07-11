@@ -10,30 +10,24 @@ import { AppDispatch, RootState } from '@/store/store'
 import { getUser } from '@/store/slices/UserSlice'
 
 const BlogerInfo: React.FC = () => {
+	const params = useParams()
 	const dispatch: AppDispatch = useDispatch()
 	const user = useSelector((store: RootState) => store.user.user)
-	const params = useParams()
 	const authorId = parseInt(params.authorId!)
 	const [author, setAuthor] = useState<UserInterface | null>(null)
-	const subscribes = user?.subscribes
 
 	async function subscribe() {
 		try {
 			await axios.patch(
 				`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
-				{
-					subscribes: [...subscribes!, authorId],
-				}
+				{ subscribes: [...user!.subscribes, authorId] }
 			)
-
 			await axios.patch(
 				`https://033a62a164f4f491.mokky.dev/users/${authorId}`,
-				{
-					subscribers: [...author!.subscribers!, user?.id],
-				}
+				{ subscribers: [...author!.subscribers!, user?.id] }
 			)
-
 			setButtonSub(!buttonSub)
+			dispatch(getUser())
 		} catch (error) {
 			console.error(error)
 			alert('Can not subscribe')
@@ -44,18 +38,14 @@ const BlogerInfo: React.FC = () => {
 		try {
 			await axios.patch(
 				`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
-				{
-					subscribes: [...subscribes!].filter(id => id !== authorId),
-				}
+				{ subscribes: [...user!.subscribes].filter(id => id !== authorId) }
 			)
-
 			await axios.patch(
 				`https://033a62a164f4f491.mokky.dev/users/${authorId}`,
-				{
-					subscribers: [...author!.subscribers!].filter(id => id !== user?.id),
-				}
+				{ subscribers: [...author!.subscribers!].filter(id => id !== user?.id) }
 			)
 			setButtonSub(!buttonSub)
+			dispatch(getUser())
 		} catch (error) {
 			console.error(error)
 			alert('Can not subscribe')
@@ -71,9 +61,7 @@ const BlogerInfo: React.FC = () => {
 			try {
 				await axios
 					.get(`https://033a62a164f4f491.mokky.dev/users/${authorId}`)
-					.then(response => {
-						setAuthor(response.data)
-					})
+					.then(response => setAuthor(response.data))
 			} catch (error) {
 				console.error(error)
 			}

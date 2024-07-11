@@ -1,5 +1,3 @@
-import Avatar from '@/components/UI/Avatar'
-import NavBar from '@/components/UI/NavBar'
 import { CommentInterface } from '@/hooks/Interfaces'
 import { getPosts } from '@/store/slices/PostsSlice'
 import { AppDispatch, RootState } from '@/store/store'
@@ -10,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import avatar from '@/assets/Avatar.webp'
 import { Link } from 'react-router-dom'
+import Container from '@/components/UI/Container'
 
 const PostComments: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch()
@@ -56,75 +55,67 @@ const PostComments: React.FC = () => {
 	}
 
 	return (
-		<div className='text-white flex justify-center mt-[8vh]'>
-			<div className='flex justify-center gap-[2%] w-[1800px] px-3  h-full max-[1200px]:justify-around'>
-				<NavBar />
-				<div className='flex w-2/3'>
-					<div className='w-3/4'>
-						<textarea
-							value={commentText}
-							onChange={e => setCommentText(e.target.value)}
-							placeholder='Оставьте коментарий'
-							className='w-full h-[100px] bg-[#282828] rounded-xl p-2 text-[15px] resize-none focus-visible:outline-none'
-						></textarea>
+		<Container>
+			<div className='flex-1'>
+				<textarea
+					value={commentText}
+					onChange={e => setCommentText(e.target.value)}
+					placeholder='Оставьте коментарий'
+					className='w-full h-[100px] bg-[#282828] rounded-xl p-2 text-[15px] resize-none focus-visible:outline-none'
+				></textarea>
 
-						<button
-							onClick={() => sendComment()}
-							className='flex items-center mt-3 gap-2 py-2 px-3 bg-[#23c565] rounded-xl text-black '
-						>
-							Добавить коментарий <Pencil width='17px' height='17px' />
-						</button>
+				<button
+					onClick={() => sendComment()}
+					className='flex items-center mt-3 gap-2 py-2 px-3 bg-[#23c565] rounded-xl text-black '
+				>
+					Добавить коментарий <Pencil width='17px' height='17px' />
+				</button>
 
-						<div className='mt-10'>
-							{comments ? (
-								comments.map((comment: CommentInterface) => (
-									<div
-										key={comment.id}
-										className='w-full bg-[#18181b] rounded-xl p-[12px] mb-4'
+				<div className='mt-10'>
+					{comments ? (
+						comments.map((comment: CommentInterface) => (
+							<div
+								key={comment.id}
+								className='w-full bg-[#18181b] rounded-xl p-[12px] mb-4'
+							>
+								<div className='flex justify-between'>
+									<Link
+										to={
+											user?.id !== comment.parentId
+												? `/userInfo/${comment.parentId}`
+												: '/userInfo'
+										}
+										className='flex items-center gap-2 hover:text-white'
 									>
-										<div className='flex justify-between'>
-											<Link
-												to={
-													user?.id !== comment.parentId
-														? `/userInfo/${comment.parentId}`
-														: '/userInfo'
-												}
-												className='flex items-center gap-2 hover:text-white'
-											>
-												<div className='overflow-hidden w-[50px] h-[50px] rounded-full'>
-													<img src={avatar} alt='#' />
-												</div>
-												<div>
-													<h5 className='text-[14px] font-bold'>
-														{user?.name}
-													</h5>
-													<h6 className='opacity-50 text-[12px] mt-[4px]'>
-														12.31.2024
-													</h6>
-												</div>
-											</Link>
-
-											{comment.parentId == user?.id && (
-												<button
-													onClick={() => deleteComment(comment.id!)}
-													className='h-[16px]'
-												>
-													<Trash2 width='16px' />
-												</button>
-											)}
+										<div className='overflow-hidden w-[50px] h-[50px] rounded-full'>
+											<img src={avatar} alt='#' />
 										</div>
-										<div className='p-2 mt-2'>{comment.text}</div>
-									</div>
-								))
-							) : (
-								<h1>No posts</h1>
-							)}
-						</div>
-					</div>
-					<Avatar />
+										<div>
+											<h5 className='text-[14px] font-bold'>{user?.name}</h5>
+											<h6 className='opacity-50 text-[12px] mt-[4px]'>
+												12.31.2024
+											</h6>
+										</div>
+									</Link>
+
+									{comment.parentId == user?.id && (
+										<button
+											onClick={() => deleteComment(comment.id!)}
+											className='h-[16px]'
+										>
+											<Trash2 width='16px' />
+										</button>
+									)}
+								</div>
+								<div className='p-2 mt-2'>{comment.text}</div>
+							</div>
+						))
+					) : (
+						<h1>No posts</h1>
+					)}
 				</div>
 			</div>
-		</div>
+		</Container>
 	)
 }
 

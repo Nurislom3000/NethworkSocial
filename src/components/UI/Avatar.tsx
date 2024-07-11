@@ -23,7 +23,7 @@ const Avatar: React.FC = () => {
 	return (
 		<div
 			onClick={() => navigate('/userInfo')}
-			className='bg-[#171717] ml-[20%] min-w-[220px] max-h-[450px] w-[18%] rounded-xl p-3 hover:cursor-pointer'
+			className='bg-[#171717] ml-[5%] min-w-[220px] max-h-[450px] w-[18%] rounded-xl p-3 hover:cursor-pointer'
 		>
 			<div className='w-full h-[350px] rounded-lg overflow-hidden flex justify-center items-center'>
 				<img className='rounded-xl' src={avatar} alt='img' />

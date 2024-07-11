@@ -26,22 +26,23 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
 	useEffect(() => {
 		dispatch(getUser())
+	}, [dispatch])
+
+	useEffect(() => {
 		setUser(globalUser)
-	}, [globalUser, dispatch])
+	}, [globalUser])
 
 	const deletePost = async () => {
 		setLove(false)
 		try {
 			await axios.patch(
 				`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
-				{
-					posts: [...user!.posts!].filter(p => p.extraId !== post.extraId),
-				}
+				{ posts: [...user!.posts].filter(p => p.extraId !== post.extraId) }
 			)
 
 			await axios.delete(`https://033a62a164f4f491.mokky.dev/posts/${post.id}`)
 			dispatch(removePost(post.id))
-			dispatch(getPosts())
+			await dispatch(getPosts())
 		} catch (error) {
 			console.error(error)
 			alert('Не можем удалить пост')
@@ -55,35 +56,27 @@ const Post: React.FC<PostProps> = ({ post }) => {
 			if (love) {
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/posts/${post.id}`,
-					{
-						likes: likes - 1,
-					}
+					{ likes: likes - 1 }
 				)
 				const updatedLikedPosts = lPosts.filter(postId => postId !== post.id)
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
-					{
-						likedPosts: updatedLikedPosts,
-					}
+					{ likedPosts: updatedLikedPosts }
 				)
 				setLPosts(updatedLikedPosts)
-				dispatch(getPosts())
+				await dispatch(getPosts())
 			} else {
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/posts/${post.id}`,
-					{
-						likes: likes + 1,
-					}
+					{ likes: likes + 1 }
 				)
 				const updatedLikedPosts = [...lPosts, post.id!]
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
-					{
-						likedPosts: updatedLikedPosts,
-					}
+					{ likedPosts: updatedLikedPosts }
 				)
 				setLPosts(updatedLikedPosts)
-				dispatch(getPosts())
+				await dispatch(getPosts())
 			}
 			setLove(!love)
 		} catch (error) {
@@ -92,7 +85,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	}
 
 	useEffect(() => {
-		if (user && Array.isArray(user.likedPosts)) {
+		if (Array.isArray(user?.likedPosts)) {
 			const filteredLikedPosts = user.likedPosts.filter(
 				(postId): postId is number => postId !== undefined
 			)
@@ -101,11 +94,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	}, [user])
 
 	useEffect(() => {
-		if (
-			user?.likedPosts &&
-			Array.isArray(user.likedPosts) &&
-			user.likedPosts.includes(post.id!)
-		) {
+		if (Array.isArray(user?.likedPosts) && user.likedPosts.includes(post.id!)) {
 			setLove(true)
 		}
 	}, [user, post.id])

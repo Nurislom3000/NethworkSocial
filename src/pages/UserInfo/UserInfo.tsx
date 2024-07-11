@@ -22,7 +22,7 @@ const UserInfo: React.FC = () => {
 
 	return (
 		<>
-			{showEditor ? <Editor closeEditor={() => setShowEditor(false)} /> : null}
+			{showEditor && <Editor closeEditor={() => setShowEditor(false)} />}
 
 			<div className='text-white flex justify-center mt-[8vh]'>
 				<div className='flex justify-center gap-[2%] w-[1800px]  h-full'>

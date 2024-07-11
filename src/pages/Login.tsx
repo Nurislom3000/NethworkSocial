@@ -11,7 +11,6 @@ const Login: React.FC = () => {
 			try {
 				axios.get('https://033a62a164f4f491.mokky.dev/users').then(response => {
 					setServerUsers(response.data)
-					console.log(response.data)
 				})
 			} catch (error) {
 				console.error(error)
@@ -59,16 +58,11 @@ const Login: React.FC = () => {
 		}
 	}
 
-	// Пароль с сервера не приходит
-
-	const I: UserInterface[] | undefined = serverUsers.filter(
-		i => i.email === email
-	)
-
 	function Login() {
-		console.log(I![0])
-
-		if (I!.length > 0 && I![0].pass === password) {
+		const I: UserInterface[] | undefined = serverUsers.filter(
+			i => i.email === email
+		)
+		if (I![0].pass === password) {
 			localStorage.setItem('user', JSON.stringify(user))
 			location.reload()
 		} else {
@@ -114,7 +108,6 @@ const Login: React.FC = () => {
 						onChange={e => setEmail(e.target.value)}
 						type='email'
 						className='form-control'
-						aria-describedby='emailHelp'
 					/>
 				</div>
 
@@ -127,9 +120,7 @@ const Login: React.FC = () => {
 						className='form-control'
 					/>
 				</div>
-
 				<br />
-
 				<button
 					onClick={() => (!login ? createUser() : Login())}
 					className='btn btn-primary'

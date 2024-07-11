@@ -3,8 +3,8 @@ import Login from '@/pages/Login'
 import Home from '@/pages/Home/Home'
 import UserInfo from '@/pages//UserInfo/UserInfo'
 import BlogerInfo from '@/pages/BlogerInfo'
-import Subscribers from '@/pages/Subscribers'
-import Subscribes from '@/pages/Subscribes'
+import { Subscribers, Subscribes } from '@/pages/Subs'
+
 import PostComments from '@/pages/PostComments'
 
 const Router = () => {
