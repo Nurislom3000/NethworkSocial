@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import AvatarIMG from '@/assets/Avatar.webp'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store/store'
-import { getUser } from '@/store/slices/UserSlice'
 
 const Avatar: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch()
@@ -17,7 +16,6 @@ const Avatar: React.FC = () => {
 
 	useEffect(() => {
 		localStorage.setItem('avatar', JSON.stringify(AvatarIMG))
-		dispatch(getUser())
 	}, [dispatch])
 
 	return (

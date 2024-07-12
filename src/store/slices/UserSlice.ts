@@ -9,6 +9,8 @@ interface InitialState {
 export const getUser = createAsyncThunk(
 	'posts/getUser',
 	async (_, thunkAPI) => {
+		console.log('GetUser')
+
 		try {
 			const response = await axios.get(
 				'https://033a62a164f4f491.mokky.dev/users'

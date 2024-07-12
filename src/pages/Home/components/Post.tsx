@@ -8,7 +8,6 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { Link, useNavigate } from 'react-router-dom'
-import { getUser } from '@/store/slices/UserSlice'
 
 interface PostProps {
 	post: PostInterface
@@ -25,23 +24,19 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	const likes = post.likes
 
 	useEffect(() => {
-		dispatch(getUser())
-	}, [dispatch])
-
-	useEffect(() => {
 		setUser(globalUser)
 	}, [globalUser])
 
 	const deletePost = async () => {
 		setLove(false)
 		try {
+			dispatch(removePost(post.id))
 			await axios.patch(
 				`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
 				{ posts: [...user!.posts].filter(p => p.extraId !== post.extraId) }
 			)
 
 			await axios.delete(`https://033a62a164f4f491.mokky.dev/posts/${post.id}`)
-			dispatch(removePost(post.id))
 			await dispatch(getPosts())
 		} catch (error) {
 			console.error(error)
@@ -54,23 +49,24 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	async function toggleLike() {
 		try {
 			if (love) {
+				const updatedLikedPosts = lPosts.filter(postId => postId !== post.id)
+				setLPosts(updatedLikedPosts)
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/posts/${post.id}`,
 					{ likes: likes - 1 }
 				)
-				const updatedLikedPosts = lPosts.filter(postId => postId !== post.id)
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
 					{ likedPosts: updatedLikedPosts }
 				)
-				setLPosts(updatedLikedPosts)
 				await dispatch(getPosts())
 			} else {
+				const updatedLikedPosts = [...lPosts, post.id!]
+				setLove(!love)
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/posts/${post.id}`,
 					{ likes: likes + 1 }
 				)
-				const updatedLikedPosts = [...lPosts, post.id!]
 				await axios.patch(
 					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
 					{ likedPosts: updatedLikedPosts }
@@ -78,7 +74,6 @@ const Post: React.FC<PostProps> = ({ post }) => {
 				setLPosts(updatedLikedPosts)
 				await dispatch(getPosts())
 			}
-			setLove(!love)
 		} catch (error) {
 			console.error(error)
 		}
