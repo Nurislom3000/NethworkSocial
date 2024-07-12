@@ -6,8 +6,8 @@ import axios from 'axios'
 import { getPosts, removePost } from '@/store/slices/PostsSlice'
 import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store/store'
 import { Link, useNavigate } from 'react-router-dom'
+import { RootState } from '@/store/store'
 
 interface PostProps {
 	post: PostInterface
@@ -17,22 +17,33 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	const dispatch: AppDispatch = useDispatch()
 	const navigate = useNavigate()
 
-	const globalUser = useSelector((store: RootState) => store.user.user)
-	const [user, setUser] = useState<UserInterface | undefined>(globalUser)
 	const [love, setLove] = useState(false)
 	const avatar = JSON.parse(localStorage.getItem('avatar')!)
 	const likes = post.likes
+	const [author, setAuthor] = useState<UserInterface | undefined>(undefined)
+	const user: UserInterface | undefined = useSelector(
+		(store: RootState) => store.user.user
+	)
+
+	async function getAuthor() {
+		await axios
+			.get(`https://033a62a164f4f491.mokky.dev/users/${post.parentId}`)
+			.then(response => {
+				setAuthor(response.data)
+			})
+	}
 
 	useEffect(() => {
-		setUser(globalUser)
-	}, [globalUser])
+		getAuthor()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const deletePost = async () => {
 		setLove(false)
 		try {
 			await axios.patch(
-				`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
-				{ posts: [...user!.posts].filter(p => p.extraId !== post.extraId) }
+				`https://033a62a164f4f491.mokky.dev/users/${author?.id}`,
+				{ posts: [...author!.posts].filter(p => p.extraId !== post.extraId) }
 			)
 
 			await axios.delete(`https://033a62a164f4f491.mokky.dev/posts/${post.id}`)
@@ -55,7 +66,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 				)
 				const updatedLikedPosts = lPosts.filter(postId => postId !== post.id)
 				await axios.patch(
-					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
+					`https://033a62a164f4f491.mokky.dev/users/${author?.id}`,
 					{ likedPosts: updatedLikedPosts }
 				)
 				setLPosts(updatedLikedPosts)
@@ -67,7 +78,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 				)
 				const updatedLikedPosts = [...lPosts, post.id!]
 				await axios.patch(
-					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
+					`https://033a62a164f4f491.mokky.dev/users/${author?.id}`,
 					{ likedPosts: updatedLikedPosts }
 				)
 				setLPosts(updatedLikedPosts)
@@ -80,26 +91,29 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	}
 
 	useEffect(() => {
-		if (Array.isArray(user?.likedPosts)) {
-			const filteredLikedPosts = user.likedPosts.filter(
+		if (Array.isArray(author?.likedPosts)) {
+			const filteredLikedPosts = author.likedPosts.filter(
 				(postId): postId is number => postId !== undefined
 			)
 			setLPosts(filteredLikedPosts)
 		}
-	}, [user])
+	}, [author])
 
 	useEffect(() => {
-		if (Array.isArray(user?.likedPosts) && user.likedPosts.includes(post.id!)) {
+		if (
+			Array.isArray(author?.likedPosts) &&
+			author.likedPosts.includes(post.id!)
+		) {
 			setLove(true)
 		}
-	}, [user, post.id])
+	}, [author, post.id])
 
 	return (
 		<div className='w-full bg-[#18181b] rounded-xl p-[12px] mb-4'>
 			<div className='flex justify-between'>
 				<Link
 					to={
-						user?.id !== post.parentId
+						author?.id !== post.parentId
 							? `/userInfo/${post.parentId}`
 							: '/userInfo'
 					}
@@ -109,7 +123,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 						<img src={avatar} alt='#' />
 					</div>
 					<div>
-						<h5 className='text-[14px] font-bold'>{user?.name}</h5>
+						<h5 className='text-[14px] font-bold'>{author?.name}</h5>
 						<h6 className='opacity-50 text-[12px] mt-[4px]'>12.31.2024</h6>
 					</div>
 				</Link>
