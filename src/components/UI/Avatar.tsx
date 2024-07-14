@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store/store'
-import ava from '@/assets/Avatar.webp'
 
 const Avatar: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch()
 	const navigate = useNavigate()
-	const [avatar, setAvatar] = useState<string | null>(ava)
+	const [avatar, setAvatar] = useState<string | null>(
+		JSON.parse(localStorage.getItem('user')!).avatar
+	)
 
 	const user: UserInterface | undefined = useSelector(
 		(store: RootState) => store.user.user

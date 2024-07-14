@@ -32,6 +32,8 @@ const Login: React.FC = () => {
 		subscribers: [],
 		posts: [],
 		likedPosts: [],
+		avatar:
+			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-Zh4LBOFFt_kGgfa01eIxQJdep3Xs4RXud_Vs7RAgBQKjkKDUk2Hramyym45dp2IO3LM&usqp=CAU',
 	}
 
 	console.log(serverUsers.find(i => i.email === email))
@@ -66,6 +68,7 @@ const Login: React.FC = () => {
 		)
 		if (I![0].pass === password) {
 			localStorage.setItem('user', JSON.stringify(user))
+
 			location.reload()
 		} else {
 			alert('Не верный email или пароль')

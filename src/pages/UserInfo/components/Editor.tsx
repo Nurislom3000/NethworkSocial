@@ -42,6 +42,12 @@ const Editor: React.FC<EditorInterface> = ({ closeEditor, changePreview }) => {
 		}
 	}
 
+	async function sendAvatar(ava: string | undefined) {
+		await axios.patch(`https://033a62a164f4f491.mokky.dev/users/${user?.id}`, {
+			avatar: ava,
+		})
+	}
+
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0]
 		if (file) {
@@ -49,7 +55,8 @@ const Editor: React.FC<EditorInterface> = ({ closeEditor, changePreview }) => {
 			reader.onloadend = () => {
 				const result = reader.result as string
 				setAvatarPreview(result)
-				localStorage.setItem('avatar', result) // Сохраняем как строку
+				localStorage.setItem('avatar', result)
+				sendAvatar(result)
 			}
 			reader.readAsDataURL(file)
 		}

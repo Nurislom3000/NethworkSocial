@@ -8,7 +8,7 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { RootState } from '@/store/store'
-import ava from '@/assets/Avatar.webp'
+// import ava from '@/assets/Avatar.webp'
 
 interface PostProps {
 	post: PostInterface
@@ -19,9 +19,9 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	const navigate = useNavigate()
 
 	const [love, setLove] = useState(false)
-	const avatar = localStorage.getItem('avatar')
-		? localStorage.getItem('avatar')!
-		: ava
+	// const avatar = localStorage.getItem('avatar')
+	// 	? localStorage.getItem('avatar')!
+	// 	: ava
 	const likes = post.likes
 	const [author, setAuthor] = useState<UserInterface | undefined>(undefined)
 	const user: UserInterface | undefined = useSelector(
@@ -126,7 +126,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 					className='flex items-center gap-2 hover:text-white'
 				>
 					<div className='overflow-hidden w-[50px] h-[50px] rounded-full'>
-						<img src={avatar} alt='#' />
+						<img src={author?.avatar} alt='#' />
 					</div>
 					<div>
 						<h5 className='text-[14px] font-bold'>{author?.name}</h5>

@@ -21,6 +21,7 @@ export interface UserInterface {
 	subscribers: Array<number>
 	posts: Array<PostInterface>
 	likedPosts: Array<number>
+	avatar?: string
 }
 
 export interface CommentInterface {
