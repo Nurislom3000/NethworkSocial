@@ -8,6 +8,7 @@ import { AppDispatch } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { RootState } from '@/store/store'
+import ava from '@/assets/Avatar.webp'
 
 interface PostProps {
 	post: PostInterface
@@ -18,22 +19,24 @@ const Post: React.FC<PostProps> = ({ post }) => {
 	const navigate = useNavigate()
 
 	const [love, setLove] = useState(false)
-	const avatar = JSON.parse(localStorage.getItem('avatar')!)
+	const avatar = localStorage.getItem('avatar')
+		? localStorage.getItem('avatar')!
+		: ava
 	const likes = post.likes
 	const [author, setAuthor] = useState<UserInterface | undefined>(undefined)
 	const user: UserInterface | undefined = useSelector(
 		(store: RootState) => store.user.user
 	)
 
-	async function getAuthor() {
-		await axios
-			.get(`https://033a62a164f4f491.mokky.dev/users/${post.parentId}`)
-			.then(response => {
-				setAuthor(response.data)
-			})
-	}
-
 	useEffect(() => {
+		async function getAuthor() {
+			await axios
+				.get(`https://033a62a164f4f491.mokky.dev/users/${post.parentId}`)
+				.then(response => {
+					setAuthor(response.data)
+				})
+		}
+
 		getAuthor()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -108,14 +111,17 @@ const Post: React.FC<PostProps> = ({ post }) => {
 		}
 	}, [author, post.id])
 
+	console.log(post.parentId)
+	console.log(author?.id)
+
 	return (
 		<div className='w-full bg-[#18181b] rounded-xl p-[12px] mb-4'>
 			<div className='flex justify-between'>
 				<Link
 					to={
-						author?.id !== post.parentId
-							? `/userInfo/${post.parentId}`
-							: '/userInfo'
+						user?.id === post.parentId
+							? '/userInfo'
+							: `/userInfo/${post.parentId}`
 					}
 					className='flex items-center gap-2 hover:text-white'
 				>

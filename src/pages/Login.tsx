@@ -34,6 +34,8 @@ const Login: React.FC = () => {
 		likedPosts: [],
 	}
 
+	console.log(serverUsers.find(i => i.email === email))
+
 	const createUser = async () => {
 		try {
 			if (
@@ -42,7 +44,7 @@ const Login: React.FC = () => {
 				password.trim().length < 3
 			) {
 				alert('Введите все и минимум 3 символа на каждае поле')
-			} else if (serverUsers.find(i => i.email === user.email)) {
+			} else if (serverUsers.find(i => i.email === email)) {
 				alert('Такой пользователь уже есть')
 			} else {
 				await axios

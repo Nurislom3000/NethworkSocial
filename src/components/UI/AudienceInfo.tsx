@@ -12,7 +12,7 @@ interface AudienceInfoInterface {
 const AudienceInfo: React.FC<AudienceInfoInterface> = ({ AudienceId }) => {
 	const dispatch: AppDispatch = useDispatch()
 	const [audience, setAudience] = useState<UserInterface | null>(null)
-	const avatar = JSON.parse(localStorage.getItem('avatar')!)
+	const avatar = localStorage.getItem('avatar')!
 
 	useEffect(() => {
 		async function getAudience() {

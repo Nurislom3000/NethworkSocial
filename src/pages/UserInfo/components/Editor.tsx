@@ -1,41 +1,57 @@
 import { getUser } from '@/store/slices/UserSlice'
 import { AppDispatch, RootState } from '@/store/store'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 interface EditorInterface {
 	closeEditor: () => void
+	changePreview: (avatarPreview: string | null) => void
 }
 
-const Editor: React.FC<EditorInterface> = ({ closeEditor }) => {
+const Editor: React.FC<EditorInterface> = ({ closeEditor, changePreview }) => {
 	const dispatch: AppDispatch = useDispatch()
-
 	const user = useSelector((store: RootState) => store.user.user)
 
-	const [surname, setSurname] = useState('')
-	const [age, setAge] = useState('')
-	const [about, setAbout] = useState('')
+	const avatarFile = useRef<HTMLInputElement | null>(null)
+	const [surname, setSurname] = useState(user?.surname ? user.surname : '')
+	const [age, setAge] = useState(user?.age ? user.age : '')
+	const [about, setAbout] = useState(user?.about ? user.about : '')
+	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
-	const addNewInfo = () => {
+	const addNewInfo = async () => {
 		if (surname.trim() !== '' && age.trim() !== '' && about.trim() !== '') {
 			try {
-				axios
-					.patch(`https://033a62a164f4f491.mokky.dev/users/${user?.id}`, {
+				await axios.patch(
+					`https://033a62a164f4f491.mokky.dev/users/${user?.id}`,
+					{
 						surname: surname,
 						age: age,
 						about: about,
-					})
-					.then(() => {
-						dispatch(getUser())
-						closeEditor()
-					})
+					}
+				)
+				dispatch(getUser())
+				changePreview(avatarPreview)
+				closeEditor()
 			} catch (error) {
 				console.error(error)
-				alert('Cant update info')
+				alert('Не удалось обновить информацию')
 			}
 		} else {
-			alert('Cant update info')
+			alert('Не удалось обновить информацию')
+		}
+	}
+
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0]
+		if (file) {
+			const reader = new FileReader()
+			reader.onloadend = () => {
+				const result = reader.result as string
+				setAvatarPreview(result)
+				localStorage.setItem('avatar', result) // Сохраняем как строку
+			}
+			reader.readAsDataURL(file)
 		}
 	}
 
@@ -52,27 +68,45 @@ const Editor: React.FC<EditorInterface> = ({ closeEditor }) => {
 					value={surname}
 					onChange={e => setSurname(e.target.value)}
 					className='form-control'
-					placeholder='Surname'
+					placeholder='Фамилия'
 				/>
 				<input
 					value={age}
 					onChange={e => setAge(e.target.value)}
 					type='number'
 					className='form-control'
-					placeholder='Age'
+					placeholder='Возраст'
 				/>
 				<textarea
 					value={about}
 					onChange={e => setAbout(e.target.value)}
 					className='form-control flex-1'
-					placeholder='About me'
+					placeholder='Обо мне'
 				/>
+				<div className='flex items-center'>
+					<label className='cursor-pointer bg-blue-500 text-white py-2 px-4 rounded'>
+						<input
+							type='file'
+							ref={avatarFile}
+							className='hidden'
+							onChange={handleFileChange}
+						/>
+						Выберите файл
+					</label>
+				</div>
+				{avatarPreview && (
+					<img
+						src={avatarPreview}
+						alt='Avatar Preview'
+						className='mt-4 w-24 h-24 object-cover rounded-full'
+					/>
+				)}
 				<button
 					onClick={() => addNewInfo()}
 					type='button'
 					className='btn btn-success'
 				>
-					Change
+					Изменить
 				</button>
 			</div>
 		</div>
