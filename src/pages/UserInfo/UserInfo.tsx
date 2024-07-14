@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store/store'
 import { getUser } from '@/store/slices/UserSlice'
 import Editor from './components/Editor'
-import ava from '@/assets/Avatar.webp'
 
 const UserInfo: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch()
@@ -14,14 +13,9 @@ const UserInfo: React.FC = () => {
 		(store: RootState) => store.user.user
 	)
 
-	const [avatar, setAvatar] = useState<string | null>(
-		localStorage.getItem('avatar') ? localStorage.getItem('avatar') : ava
-	)
-
 	const [showEditor, setShowEditor] = useState(false)
 
 	const changeAvatar = (URL: string | null) => {
-		setAvatar(URL)
 		if (URL) {
 			localStorage.setItem('avatar', URL)
 		}
@@ -47,11 +41,7 @@ const UserInfo: React.FC = () => {
 					<div className='w-[70%] rounded-xl flex gap-3'>
 						<div className='bg-[#171717] max-h-[450px] w-[23%] min-w-[200px] rounded-xl p-3 flex flex-col gap-3 items-center'>
 							<div className='w-full h-[250px] rounded-lg overflow-hidden flex justify-center items-center p-2'>
-								<img
-									className='rounded-xl'
-									src={avatar || '/default-avatar.png'}
-									alt='Avatar'
-								/>
+								<img className='rounded-xl' src={user?.avatar} alt='Avatar' />
 							</div>
 							<h2 className='font-bold text-[20px]'>{user?.name}</h2>
 							<button
