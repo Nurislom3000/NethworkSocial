@@ -2,13 +2,12 @@ import { CommentInterface } from '@/hooks/Interfaces'
 import { getPosts } from '@/store/slices/PostsSlice'
 import { AppDispatch, RootState } from '@/store/store'
 import axios from 'axios'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import avatar from '@/assets/Avatar.webp'
-import { Link } from 'react-router-dom'
 import Container from '@/components/UI/Container'
+import Comment from './Comment'
 
 const PostComments: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch()
@@ -74,41 +73,12 @@ const PostComments: React.FC = () => {
 				<div className='mt-10'>
 					{comments ? (
 						comments.map((comment: CommentInterface) => (
-							<div
+							<Comment
 								key={comment.id}
-								className='w-full bg-[#18181b] rounded-xl p-[12px] mb-4'
-							>
-								<div className='flex justify-between'>
-									<Link
-										to={
-											user?.id !== comment.parentId
-												? `/userInfo/${comment.parentId}`
-												: '/userInfo'
-										}
-										className='flex items-center gap-2 hover:text-white'
-									>
-										<div className='overflow-hidden w-[50px] h-[50px] rounded-full'>
-											<img src={avatar} alt='#' />
-										</div>
-										<div>
-											<h5 className='text-[14px] font-bold'>{user?.name}</h5>
-											<h6 className='opacity-50 text-[12px] mt-[4px]'>
-												12.31.2024
-											</h6>
-										</div>
-									</Link>
-
-									{comment.parentId == user?.id && (
-										<button
-											onClick={() => deleteComment(comment.id!)}
-											className='h-[16px]'
-										>
-											<Trash2 width='16px' />
-										</button>
-									)}
-								</div>
-								<div className='p-2 mt-2'>{comment.text}</div>
-							</div>
+								comment={comment}
+								deleteComment={deleteComment}
+								userId={user?.id}
+							/>
 						))
 					) : (
 						<h1>No posts</h1>

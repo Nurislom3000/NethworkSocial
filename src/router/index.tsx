@@ -5,7 +5,7 @@ import UserInfo from '@/pages//UserInfo/UserInfo'
 import BlogerInfo from '@/pages/BlogerInfo'
 import { Subscribers, Subscribes } from '@/pages/Subs'
 
-import PostComments from '@/pages/PostComments'
+import PostComments from '@/pages/Comments/PostComments'
 
 const Router = () => {
 	const hasUser = localStorage.getItem('user')

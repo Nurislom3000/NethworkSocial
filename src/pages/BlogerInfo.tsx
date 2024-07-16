@@ -1,6 +1,5 @@
 import NavBar from '@/components/UI/NavBar'
 import React, { useEffect, useState } from 'react'
-import avatar from '@/assets/Avatar.webp'
 import { UserRoundMinus, UserRoundPlus } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 import { UserInterface } from '@/hooks/Interfaces'
@@ -79,9 +78,9 @@ const BlogerInfo: React.FC = () => {
 					<div className='w-[70%] rounded-xl flex gap-3'>
 						<div className='bg-[#171717] max-h-[450px] w-[23%] min-w-[200px] rounded-xl p-3 flex flex-col gap-3 items-center'>
 							<div className='w-full h-[250px] rounded-lg overflow-hidden flex justify-center items-center p-2 '>
-								<img className='rounded-xl' src={avatar} alt='img' />
+								<img className='rounded-xl' src={author?.avatar} alt='img' />
 							</div>
-							<h2 className='font-bold text-[20px]'>{user?.name}</h2>
+							<h2 className='font-bold text-[20px]'>{author?.name}</h2>
 							{!buttonSub ? (
 								<button
 									onClick={() => subscribe()}

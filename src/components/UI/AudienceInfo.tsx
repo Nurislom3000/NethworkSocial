@@ -12,7 +12,6 @@ interface AudienceInfoInterface {
 const AudienceInfo: React.FC<AudienceInfoInterface> = ({ AudienceId }) => {
 	const dispatch: AppDispatch = useDispatch()
 	const [audience, setAudience] = useState<UserInterface | null>(null)
-	const avatar = localStorage.getItem('avatar')!
 
 	useEffect(() => {
 		async function getAudience() {
@@ -35,7 +34,7 @@ const AudienceInfo: React.FC<AudienceInfoInterface> = ({ AudienceId }) => {
 				<div className='flex justify-between'>
 					<div className='flex items-center gap-2 '>
 						<div className='overflow-hidden w-[50px] h-[50px] rounded-full'>
-							<img src={avatar} alt='#' />
+							<img src={audience?.avatar} alt='#' />
 						</div>
 						<div>
 							<h5 className='text-[14px] font-bold'>{audience?.name}</h5>
