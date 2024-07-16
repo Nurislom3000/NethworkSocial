@@ -111,9 +111,6 @@ const Post: React.FC<PostProps> = ({ post }) => {
 		}
 	}, [author, post.id])
 
-	console.log(post.parentId)
-	console.log(author?.id)
-
 	return (
 		<div className='w-full bg-[#18181b] rounded-xl p-[12px] mb-4'>
 			<div className='flex justify-between'>
